@@ -1,8 +1,88 @@
 import { StyleSheet, Text, View,ImageBackground,Image } from 'react-native'
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import Colors from '../config/Colors';
+import axios from 'axios';
 
 export default function TodayForcast() {
+    const [cityName,setCityName] = useState('');
+    const [temprature,setTemp] = useState('');
+    const [description,setDesc] = useState('');
+    const [img,setImg] = useState(require('../assets/openWeatherIcons/01d.png'));
+    const [maxTemp,setMaxTemp] = useState('');
+    const [humidity,setHumidity] = useState('');
+    const [wind,setWind] = useState('');
+
+    
+
+
+
+    useEffect(()=>{
+        getForecast();
+
+    },[]);
+
+    const getForecast =async() =>{
+        const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=6.042646&lon=80.238750&appid=9b98af24492e17c4b524a65d593a28de';
+
+        axios.get(apiUrl).then(response =>{
+            setCityName(response.data.name)
+            const tempNum = Math.floor(response.data.main.temp / 10);
+            setTemp(tempNum)
+            setDesc(response.data.weather[0].description);
+            console.log(response.data.wind.speed);
+            setMaxTemp(Math.floor(response.data.main.temp_max /10));
+            getWeatherIcon(response.data.weather[0].icon)
+            setHumidity(response.data.main.humidity);
+            setWind(response.data.wind.speed)
+            
+        }).catch(error => {
+            console.log('Error', error);
+        })
+
+    }
+
+    const getWeatherIcon = (icon) =>{
+        
+        if(icon == '01d'){
+            setImg(require('../assets/openWeatherIcons/01d.png'))
+        }else if(icon == '02d'){
+            setImg(require('../assets/openWeatherIcons/02d.png'))
+        }else if(icon == '02n'){
+            setImg(require('../assets/openWeatherIcons/02n.png'))
+        }else if(icon == '03d'){
+            setImg(require('../assets/openWeatherIcons/03d.png'))
+        }else if(icon == '03n'){
+            setImg(require('../assets/openWeatherIcons/03n.png'))
+        }else if(icon == '04d'){
+            return require('../assets/openWeatherIcons/04d.png')
+        }else if(icon == '04n'){
+            return require('../assets/openWeatherIcons/04n.png')
+        }else if(icon == '09d'){
+            setImg(require('../assets/openWeatherIcons/09d.png'))
+        }else if(icon == '09n'){
+            setImg(require('../assets/openWeatherIcons/09n.png'))
+        }else if(icon == '10d'){
+            setImg(require('../assets/openWeatherIcons/10d.png'))
+        }else if(icon == '10n'){
+            setImg(require('../assets/openWeatherIcons/10n.png'))
+        }else if(icon == '11d'){
+            setImg(require('../assets/openWeatherIcons/11d.png'))
+        }else if(icon == '11n'){
+            setImg(require('../assets/openWeatherIcons/11n.png'))
+        }else if(icon == '13d'){
+            setImg(require('../assets/openWeatherIcons/13d.png'))
+        }else if(icon == '13n'){
+            setImg(require('../assets/openWeatherIcons/13n.png'))
+        }else if(icon == '50d'){
+            setImg(require('../assets/openWeatherIcons/50d.png'))
+        }else if(icon == '50n'){
+            setImg(require('../assets/openWeatherIcons/50n.png'))
+        }else {
+            setImg(require('../assets/openWeatherIcons/03d.png'))
+        }
+
+    }
+
     const temp = 28;
   return (
     <ImageBackground
@@ -60,7 +140,7 @@ export default function TodayForcast() {
                     margin:5
                 }}
             />
-            <Text style={{fontSize:26, color:'white', fontWeight:'400'}}>GALLE</Text>
+            <Text style={{fontSize:26, color:'white', fontWeight:'400'}}>{cityName == ''?  'GALLE': cityName}</Text>
             </View>
             <View>
                 <Text
@@ -70,7 +150,7 @@ export default function TodayForcast() {
             <View style={{flexDirection:'row', alignItems:'center',bottom:22}}>
                 <Text 
                     style={{color:'white',fontSize:130,fontWeight:'400'}}
-                >28</Text>
+                >{temprature == '' ? '28' : temprature}</Text>
                 <View>
                 <Image
                 source={require('../assets/icons/celcius.png')}
@@ -81,7 +161,7 @@ export default function TodayForcast() {
                 }}
             />
                 <Image
-                source={require('../assets/openWeatherIcons/03d.png')}
+                source={require('../assets/openWeatherIcons/10d.png')}
                 style={{
                     width:75,
                     height:50,
@@ -92,7 +172,7 @@ export default function TodayForcast() {
                 
             </View>
             <View>
-                    <Text style={{fontSize:28,color:'white', fontWeight:'600', bottom:43}}>SCATTERED CLOUDS</Text>
+                    <Text style={{fontSize:28,color:'white', fontWeight:'600', bottom:43}}>{description == '' ? 'SCATTERED CLOUDS' : description}</Text>
             </View>
         </View>
         {/* card 1 */}
@@ -120,7 +200,7 @@ export default function TodayForcast() {
             />
                 </View>
                 <Text style={{color:Colors.GRAY}}>Max Temp</Text>
-                <Text style={{color:Colors.DARK,fontWeight:'400',fontSize:18}}>28 &#8451;</Text>
+                <Text style={{color:Colors.DARK,fontWeight:'400',fontSize:18}}>{maxTemp == '' ? '28' : maxTemp} &#8451;</Text>
                 </View>
                 {/* humidity */}
                 <View style={{alignItems:'center'}}>
@@ -135,7 +215,7 @@ export default function TodayForcast() {
             />
                 </View>
                 <Text style={{color:Colors.GRAY}}>Humidity</Text>
-                <Text style={{color:Colors.DARK,fontWeight:'400',fontSize:18}}>67 %</Text>
+                <Text style={{color:Colors.DARK,fontWeight:'400',fontSize:18}}>{humidity} %</Text>
                 </View>
                 {/* wind */}
                 <View style={{alignItems:'center'}}>
@@ -150,7 +230,7 @@ export default function TodayForcast() {
             />
                 </View>
                 <Text style={{color:Colors.GRAY}}>Wind</Text>
-                <Text style={{color:Colors.DARK,fontWeight:'400',fontSize:18}}>2.51 m/s</Text>
+                <Text style={{color:Colors.DARK,fontWeight:'400',fontSize:18}}>{wind} m/s</Text>
                 </View>
 
             </View>

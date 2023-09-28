@@ -6,7 +6,7 @@ import DailyForcast from './src/screens/DailyForcast'
 export default function App() {
   
   return (
-    <DailyForcast />
+    <TodayForcast />
   )
 }
 
